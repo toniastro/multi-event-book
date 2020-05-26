@@ -36,6 +36,23 @@ Update .env with the needed variables
 | RAVE_API_TEST | https://api.ravepay.co/flwv3-pug/getpaidx/api/v2/verify |
 
 
+### PDF gENERATOR 
+  The PDF generator used here to converts from HTML to PDF. You could check this [repo](https://github.com/Mindinventory/Golang-HTML-TO-PDF-Converter) for more details.
+  
+  For Mac users, to install the core package wkhtmltopdf,; this command
+  
+```sh
+$ brew install Caskroom/cask/wkhtmltopdf
+```
+
+For Ubuntu users, to install the core package wkhtmltopdf,; this command
+  
+```sh
+$ sudo apt install wkhtmltopdf 
+```
+
+For Windows users, you could visit this [url](https://wkhtmltopdf.org/downloads.html) to download the executable file.
+
 ### Run Application
  Run command within the multi-event-book directory you cloned
  
