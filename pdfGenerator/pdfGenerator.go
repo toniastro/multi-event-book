@@ -1,80 +1,153 @@
 package pdfGenerator
 
 import (
-	"bytes"
-	"github.com/SebastiaanKlippert/go-wkhtmltopdf"
-	"html/template"
+	"encoding/base64"
+	"fmt"
+	"github.com/johnfercher/maroto/pkg/consts"
+	"github.com/johnfercher/maroto/pkg/pdf"
+	"github.com/johnfercher/maroto/pkg/props"
 	"io/ioutil"
-	"log"
 	"os"
-	"strconv"
 	"time"
 )
 
-//pdf requested struct
-type RequestPdf struct {
-	body string
+type Receipt struct {
+	Currency    string
+	Amount      int
+	Reference   string
+	Paid        time.Time
+	FullName    string
+	Email       string
+	Address     string
+	EventName   string
+	Details     string
 }
 
-//new request to pdf function
-func NewRequestPdf(body string) *RequestPdf {
-	return &RequestPdf{
-		body: body,
-	}
-}
+func (r Receipt) GeneratePDF() bool {
+	data := r
+	begin := time.Now()
+	m := pdf.NewMaroto(consts.Portrait, consts.A4)
+	m.SetPageMargins(10, 15, 10)
+	//m.SetBorder(true)
 
-//parsing template function
-func (r *RequestPdf) ParseTemplate(templateFileName string, data interface{}) error {
-
-	t, err := template.ParseFiles(templateFileName)
+	byteSlices, err := ioutil.ReadFile("storage/pdf/go.jpg")
 	if err != nil {
-		return err
-	}
-	buf := new(bytes.Buffer)
-	if err = t.Execute(buf, data); err != nil {
-		return err
-	}
-	r.body = buf.String()
-	return nil
-}
-
-//generate pdf function
-func (r *RequestPdf) GeneratePDF(pdfPath string) (bool, error) {
-	t := time.Now().Unix()
-	// write whole the body
-	err1 := ioutil.WriteFile("dumpHTML/"+strconv.FormatInt(int64(t), 10)+".html", []byte(r.body), 0644)
-	if err1 != nil {
-		panic(err1)
+		fmt.Println("Got error while opening file:", err)
+		os.Exit(1)
 	}
 
-	f, err := os.Open("dumpHTML/" + strconv.FormatInt(int64(t), 10) + ".html")
-	if f != nil {
-		defer f.Close()
-	}
+	base64 := base64.StdEncoding.EncodeToString(byteSlices)
+
+	m.RegisterHeader(func() {
+		m.Row(20, func() {
+			m.Col(3, func() {
+				m.Base64Image(base64, consts.Jpg, props.Rect{
+					Center:  true,
+					Percent: 70,
+				})
+			})
+
+			m.ColSpace(3)
+
+			m.Col(3, func() {
+				m.QrCode("https://github.com/iamt-chadwick/multi-event-book", props.Rect{
+					Center:  true,
+					Percent: 75,
+				})
+			})
+		})
+
+		m.Line(1.0)
+
+	})
+
+
+	m.Row(15, func() {
+		m.Col(12, func() {
+			m.Text(fmt.Sprintf("Receipt of Payment for Event"), props.Text{
+				Top:   8,
+				Style: consts.Bold,
+			})
+		})
+	})
+	m.Row(15, func() {
+		m.Col(12, func() {
+
+			m.Text(fmt.Sprintf("Reference ID for payment: " + data.Reference), props.Text{
+				Top:   8,
+				Style: consts.Bold,
+			})
+		})
+	})
+	m.Row(15, func() {
+		m.Col(12, func() {
+
+			m.Text(fmt.Sprintf("%d %s in total \n", data.Amount ,data. Currency), props.Text{
+				Top:   8,
+				Style: consts.Bold,
+			})
+		})
+	})
+	m.Row(15, func() {
+		m.Col(12, func() {
+
+			m.Text(fmt.Sprintf("Address of Event: " + data.Address), props.Text{
+				Top:   8,
+				Style: consts.Bold,
+			})
+		})
+	})
+	m.Row(15, func() {
+		m.Col(12, func() {
+
+			m.Text(fmt.Sprintf("Event Name: " + data.EventName), props.Text{
+				Top:   8,
+				Style: consts.Bold,
+			})
+		})
+	})
+	m.Row(15, func() {
+		m.Col(12, func() {
+
+			m.Text(fmt.Sprintf("Full Name: " + data.FullName), props.Text{
+				Top:   8,
+				Style: consts.Bold,
+			})
+		})
+	})
+	m.Row(15, func() {
+		m.Col(12, func() {
+
+			m.Text(fmt.Sprintf("Email Address: " + data.Email), props.Text{
+				Top:   8,
+				Style: consts.Bold,
+			})
+		})
+	})
+
+	m.Row(15, func() {
+		m.Col(12, func() {
+
+			m.Text(fmt.Sprintf("I'd have loved to send this to your email, but no stress :)"), props.Text{
+				Top:   8,
+				Style: consts.Bold,
+			})
+		})
+	})
+
+	m.Line(1.0)
+
+	m.AddPage()
+
+	err = m.OutputFileAndClose("storage/pdf/"+ data.Reference + ".pdf")
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println("Could not save PDF:", err)
+		os.Exit(1)
 	}
 
-	pdfg, err := wkhtmltopdf.NewPDFGenerator()
-	if err != nil {
-		log.Fatal(err)
-	}
+	end := time.Now()
 
-	pdfg.AddPage(wkhtmltopdf.NewPageReader(f))
+	fmt.Println(end.Sub(begin))
 
-	pdfg.PageSize.Set(wkhtmltopdf.PageSizeA4)
-
-	pdfg.Dpi.Set(300)
-
-	err = pdfg.Create()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	err = pdfg.WriteFile(pdfPath)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return true, nil
+	return true
 }

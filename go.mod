@@ -16,6 +16,7 @@ require (
 	github.com/gosimple/slug v1.9.0 // indirect
 	github.com/ichtrojan/thoth v1.0.0
 	github.com/jinzhu/gorm v1.9.12
+	github.com/johnfercher/maroto v0.27.0
 	github.com/joho/godotenv v1.3.0
 	github.com/microcosm-cc/bluemonday v1.0.2 // indirect
 	github.com/qor/middlewares v0.0.0-20170822143614-781378b69454 // indirect

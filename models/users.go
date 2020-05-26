@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"github.com/go-ozzo/ozzo-validation"
 	"github.com/go-ozzo/ozzo-validation/is"
-	p "github.com/iamt-chadwick/multi-event-book/pdfGenerator"
+	"github.com/iamt-chadwick/multi-event-book/pdfGenerator"
 	u "github.com/iamt-chadwick/multi-event-book/utils"
 	"github.com/ichtrojan/thoth"
 	_ "github.com/ichtrojan/thoth"
@@ -34,6 +34,7 @@ type Users struct{
 	Verified     bool     `gorm:"default: false"`
 	Verified_by  string   `gorm:"null;type:varchar(100)"`
 }
+
 type Price struct{
 	Price        float64       `json:"amount"`
 	EventsID     int		   `json:"events_id"`
@@ -161,6 +162,9 @@ func (a Users) Validate() error {
 	)
 }
 
+
+
+
 func (detail *Users) Create(w http.ResponseWriter) map[string] interface{} {
 
 	err := detail.Validate()
@@ -283,23 +287,7 @@ func (detail *Payload) Confirm(w http.ResponseWriter) (map[string] interface{}) 
 
 			GetDB().Table("events").Select("name,address,details").Where("id = ?", user.EventID).First(event)
 
-			p := p.NewRequestPdf("")
-
-			templatePath := "ticket/ticket.html"
-
-			outputPath := "storage/pdf/"+ transactionReference + ".pdf"
-
-			templateData := struct {
-				Currency string
-				Amount int
-				Reference string
-				Paid time.Time
-				FullName string
-				Email string
-				Address string
-				EventName string
-				Details string
-			}{
+			templateData := pdfGenerator.Receipt{
 				Currency: data.Data.Currency,
 				Amount  : data.Data.Chargedamount,
 				Reference: transactionReference,
@@ -310,29 +298,22 @@ func (detail *Payload) Confirm(w http.ResponseWriter) (map[string] interface{}) 
 				EventName : event.Name,
 				Details : event.Details,
 			}
-			if err := p.ParseTemplate(templatePath, templateData); err == nil{
 
-				ok,_ := p.GeneratePDF(outputPath)
+			if templateData.GeneratePDF() {
 
-				fmt.Println(ok, "PDF gernerated")
+				domain, domainExists := os.LookupEnv("DOMAIN_HOST")
 
-			}else{
+				if !domainExists {
 
-				logger.Log(err)
+					domain = "http://localhost/"
 
-				panic(err)
+				}
 
+				u.Response(w, http.StatusOK, "This payment has been verified",domain+transactionReference + ".pdf")
+
+				return nil
 			}
 
-			domain, domainExists := os.LookupEnv("DOMAIN_HOST")
-
-			if !domainExists {
-				domain = "http://localhost/"
-			}
-
-			u.Response(w, http.StatusOK, "This payment has been verified",domain+transactionReference + ".pdf")
-
-			return nil
 		}
 
 		logger.Log(errors.New(results))
@@ -440,3 +421,4 @@ func returnAPIKey() string {
 
 	return os.Getenv("RAVE_API_LIVE")
 }
+
