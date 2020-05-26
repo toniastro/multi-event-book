@@ -39,8 +39,8 @@ func main() {
     	handler = handlers.RecoveryHandler(handlers.PrintRecoveryStack(true))(handler)
 	}
 
-	// http.Handle("/", handler)
-	if err := http.ListenAndServe(":"+port, routes.Init()); err != nil {
+	http.Handle("/", handler)
+	if err := http.ListenAndServe(":"+port, nil); err != nil {
 		logger.Log(err)
 		log.Fatal(err)
 	}
