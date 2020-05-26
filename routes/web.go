@@ -16,7 +16,7 @@ func Init() *mux.Router {
 	route.PathPrefix("/pdf/{code}.pdf").Handler(http.StripPrefix("/pdf/", http.FileServer(http.Dir("./storage/pdf/"))))
 	route.NotFoundHandler = http.HandlerFunc(notFound)
 	route.HandleFunc("/api/events/payment", controllers.Detail).Methods("POST")
-	route.HandleFunc("/api/events/payment/verify", controllers.Verify).Methods("POST")
+	route.HandleFunc("/api/verify-payment", controllers.Verify).Methods("POST")
 	route.HandleFunc("/api/events", controllers.GetAllEvents).Methods("GET")
 	route.HandleFunc("/api/events/{code}", controllers.GetOneEvent).Methods("GET")
 	route.HandleFunc("/api/events/type/{id}", controllers.GetTicket).Methods("GET")

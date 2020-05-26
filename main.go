@@ -22,7 +22,7 @@ func main() {
 	port, portExists := os.LookupEnv("PORT")
 
 	if !portExists {
-		port = "8080"
+		port = "8200"
 	}
 
 
