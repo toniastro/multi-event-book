@@ -26,10 +26,10 @@ func init() {
 	dbHost := os.Getenv("DB_HOST")
 
 
-	db_details := fmt.Sprintf("%s:%s@tcp(%s:3306)/%s?charset=utf8&parseTime=True&loc=Local",username,password, dbHost, dbName) //Build connection string
+	dbDetails := fmt.Sprintf("%s:%s@tcp(%s:3306)/%s?charset=utf8&parseTime=True&loc=Local",username,password, dbHost, dbName) //Build connection string
 	
 
-	conn, err := gorm.Open("mysql", db_details)
+	conn, err := gorm.Open("mysql", dbDetails)
 	// fmt.Println(db_details)
 
 	if err != nil {

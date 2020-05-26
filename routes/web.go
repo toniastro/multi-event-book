@@ -1,12 +1,12 @@
 package routes
 
 import (
+	"github.com/gorilla/mux"
+	"github.com/iamt-chadwick/multi-event-book/controllers"
+	"github.com/ichtrojan/thoth"
 	"html/template"
 	"log"
 	"net/http"
-	"github.com/ichtrojan/thoth"
-	"github.com/iamt-chadwick/multi-event-book/controllers"
-	"github.com/gorilla/mux"
 )
 
 func Init() *mux.Router {

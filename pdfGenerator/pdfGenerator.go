@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-//pdf requestpdf struct
+//pdf requested struct
 type RequestPdf struct {
 	body string
 }

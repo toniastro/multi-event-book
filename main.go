@@ -3,10 +3,10 @@ package main
 import (
 	"errors"
 	"github.com/gorilla/handlers"
+	"github.com/iamt-chadwick/multi-event-book/routes"
 	"github.com/ichtrojan/thoth"
 	"github.com/joho/godotenv"
 	"log"
-	"github.com/iamt-chadwick/multi-event-book/routes"
 	"net/http"
 	"os"
 )

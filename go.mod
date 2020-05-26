@@ -1,4 +1,4 @@
-module multi-event-book
+module github.com/iamt-chadwick/multi-event-book
 
 go 1.13
 
