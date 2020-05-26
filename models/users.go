@@ -324,7 +324,13 @@ func (detail *Payload) Confirm(w http.ResponseWriter) (map[string] interface{}) 
 
 			}
 
-			u.Response(w, http.StatusOK, "This payment has been verified","http://localhost:8200/pdf/"+transactionReference + ".pdf")
+			domain, domainExists := os.LookupEnv("DOMAIN_HOST")
+
+			if !domainExists {
+				domain = "http://localhost/"
+			}
+
+			u.Response(w, http.StatusOK, "This payment has been verified",domain+transactionReference + ".pdf")
 
 			return nil
 		}
