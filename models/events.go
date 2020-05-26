@@ -3,7 +3,7 @@ package models
 
 import (
 	"github.com/jinzhu/gorm"
-	u "multi-event-booking/utils"
+	u "github.com/iamt-chadwick/multi-event-book/utils"
 	"net/http"
 	"time"
 )

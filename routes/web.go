@@ -4,19 +4,14 @@ import (
 	"html/template"
 	"log"
 	"net/http"
-
 	"github.com/ichtrojan/thoth"
-
-	"multi-event-booking/controllers"
-
+	"github.com/iamt-chadwick/multi-event-book/controllers"
 	"github.com/gorilla/mux"
 )
 
 func Init() *mux.Router {
 
 	route := mux.NewRouter().StrictSlash(true)
-
-	
 	// route.PathPrefix("/assets/").Handler(http.StripPrefix("/assets/", http.FileServer(http.Dir("./public"))))
 	route.PathPrefix("/pdf/{code}.pdf").Handler(http.StripPrefix("/pdf/", http.FileServer(http.Dir("./storage/pdf/"))))
 	route.NotFoundHandler = http.HandlerFunc(notFound)

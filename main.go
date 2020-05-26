@@ -6,7 +6,7 @@ import (
 	"github.com/ichtrojan/thoth"
 	"github.com/joho/godotenv"
 	"log"
-	"multi-event-booking/routes"
+	"github.com/iamt-chadwick/multi-event-book/routes"
 	"net/http"
 	"os"
 )

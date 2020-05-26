@@ -12,9 +12,6 @@ var (
 	TemplateExt string = ".gohtml"
 )
 
-/**
-function to load the view
-*/
 func NewView(layout string, files ...string) *View {
 	addTemplatePath(files)
 	addTemplateExt(files)
@@ -61,9 +58,6 @@ func addTemplateExt(files []string) {
 	}
 }
 
-/**
-function to render the view
-*/
 func (v *View) Render(w http.ResponseWriter,
 	data interface{}) error {
 	return v.Template.ExecuteTemplate(w, v.Layout, data)
