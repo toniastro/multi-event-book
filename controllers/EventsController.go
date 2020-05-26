@@ -2,14 +2,15 @@ package controllers
 
 import (
 	_ "encoding/json"
-	"github.com/gorilla/mux"
-	"github.com/ichtrojan/thoth"
-	"github.com/jinzhu/gorm"
-	"github.com/iamt-chadwick/multi-event-book/models"
-	u "github.com/iamt-chadwick/multi-event-book/utils"
 	"net/http"
 	"time"
 	_ "time"
+
+	"github.com/gorilla/mux"
+	"github.com/iamt-chadwick/multi-event-book/models"
+	u "github.com/iamt-chadwick/multi-event-book/utils"
+	"github.com/ichtrojan/thoth"
+	"github.com/jinzhu/gorm"
 )
 
 type Ticket struct {
@@ -22,8 +23,8 @@ type Ticket struct {
 	Address      string    `json:"address"`
 	Active       bool      `json:"active"`
 }
-type Sellout struct{
-	Active 	  bool       `json:"active"`
+type Sellout struct {
+	Active bool `json:"active"`
 }
 
 var db_call = models.GetDB()
@@ -36,14 +37,14 @@ func GetAllEvents(w http.ResponseWriter, r *http.Request) {
 
 	err := db_call.Preload("Event_Kinds").Where("active = ?", 1).Find(&events).Error
 
-	if err != nil{
+	if err != nil {
 		logger.Log(err)
 	}
 
-	u.Response(w, http.StatusOK,"", events )
+	u.Response(w, http.StatusOK, "", events)
 }
 
- func GetOneEvent(w http.ResponseWriter, r *http.Request) {
+func GetOneEvent(w http.ResponseWriter, r *http.Request) {
 
 	eventCode := mux.Vars(r)["code"]
 
@@ -55,22 +56,22 @@ func GetAllEvents(w http.ResponseWriter, r *http.Request) {
 
 		logger.Log(errors)
 
-		u.Errors(w, http.StatusBadRequest, "This record does not exist",nil)
+		u.Errors(w, http.StatusBadRequest, "This record does not exist", nil)
 
 		return
 	}
 
-	u.Response(w,http.StatusOK, "", temp)
+	u.Response(w, http.StatusOK, "", temp)
 }
 
-func GetTicket(w http.ResponseWriter, r *http.Request){
+func GetTicket(w http.ResponseWriter, r *http.Request) {
 	eventKindId := mux.Vars(r)["id"]
 
 	ticketKind := models.EventKind{}
 
 	events := models.Events{}
 
-    errors := db_call.Where("id = ?", eventKindId).First(&ticketKind).Error
+	errors := db_call.Where("id = ?", eventKindId).First(&ticketKind).Error
 
 	errors = db_call.Where("id = ?", ticketKind.EventsID).First(&events).Error
 
@@ -78,18 +79,18 @@ func GetTicket(w http.ResponseWriter, r *http.Request){
 
 		logger.Log(errors)
 
-		u.Errors(w, http.StatusBadRequest, "This record does not exist",nil)
+		u.Errors(w, http.StatusBadRequest, "This record does not exist", nil)
 
 		return
 	}
 	if !ticketKind.Active {
 
-		u.Response(w,http.StatusOK, "The ticket selected is sold out.", Sellout{Active: false})
+		u.Response(w, http.StatusOK, "The ticket selected is sold out.", Sellout{Active: false})
 
 		return
 	}
 
-	data:= Ticket{
+	data := Ticket{
 		Name:         ticketKind.Name,
 		Price:        ticketKind.Price,
 		TicketActive: ticketKind.Active,
@@ -100,6 +101,5 @@ func GetTicket(w http.ResponseWriter, r *http.Request){
 		Active:       events.Active,
 	}
 
-	u.Response(w,http.StatusOK, "", data)
+	u.Response(w, http.StatusOK, "", data)
 }
-

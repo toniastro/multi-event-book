@@ -1,4 +1,4 @@
-module multi-event-booking
+module multi-event-book
 
 go 1.13
 
