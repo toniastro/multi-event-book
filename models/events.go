@@ -27,7 +27,7 @@ type EventKind struct {
 	ID         uint      `json:"id" gorm:"primary_key"`
 	Name       string    `gorm:"type:varchar(100)" json:"name"`
 	Price      float64   `gorm:"type:decimal(10,2);not null" json:"price"`
-	Active     bool      `gorm:"not null" json:"active"`
+	Active     bool      `gorm:"default:true" json:"active"`
 	EventsID   uint      `gorm:"association_foreignkey:event_kinds"`
 	CreatedAt time.Time  `gorm:"not null;default:CURRENT_TIMESTAMP" json:"-" `
 	UpdatedAt time.Time  `gorm:"not null;default:CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP" json:"-"`
