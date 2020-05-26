@@ -27,11 +27,6 @@ func Message(status int, message string) (map[string]interface{}) {
 	return map[string]interface{} {"status" : status, "message" : message}
 }
 
-
-func Data(status bool, message map[string]interface{}) (map[string]interface{}) {
-	return map[string]interface{} {"status" : status, "message" : message}
-}
-
 func Errors (w http.ResponseWriter, status int, message string, errors interface{} )  {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(status)
