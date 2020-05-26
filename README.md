@@ -1,10 +1,57 @@
-# Multi-event-booking
+# Multi-event Booking  (Vue + Go)
 
-Multi-event booking bulit on Vue + Go 
+[![N|Solid](https://res.cloudinary.com/siteat/image/upload/v1590527203/Screenshot_2020-05-26_at_22.02.12_fi5zbr.png)](https://try.toniastro.com)
 
 
-1. The front-end attached in this repo (the build dir) can be found at this repo, just in cae you want to make a few tweaks.
+This application was built on [Golang 1.14.3](https://golang.org/), [Vue](https://vuejs.org/) and Vibes. It's basic functions is to enable you purchase tickets for events uploaded and get your receipt in PDF immediately after payment. 
 
-2. Rave by Flutterwave payment integration was implemented here.
+  - Payment Integration : [Rave](https://ravepay.co/) by Flutterwave
+  - Deployed with Docker 
+  - Magic
 
-3. Do cp the .env.example to create a .env file to ensure the variables needed are filled.
+### Installation
+
+This application required setting up on a local enviroment for  [Golang](https://golang.org/) and creating a local database .
+
+Clone the repo into your local and set up enviroment
+
+```sh
+$ git clone https://github.com/iamt-chadwick/multi-event-book.git
+$ cd multi-event-book
+$ cp .env.example .env
+```
+Update .env with the needed variables
+
+| VARIABLE | *data needed |
+| ------ | ------ |
+| DB_PORT | your database port |
+| DB_HOST | your database host |
+| DB_NAME | name of empty database created |
+| DOMAIN_HOST | the url to access your web application (localhost or a domain[url] |
+| PORT | the port you want your application would be served on  |
+| RAVE_PUBLIC_KEY | You would get this from your [Rave Dashboard](https://dashboard.flutterwave.com/) |
+| RAVE_SECRET_KEY | You would get this from your [Rave Dashboard](https://dashboard.flutterwave.com/)|
+| RAVE_MODE | this should be (live or test) |
+| RAVE_API_TEST | https://ravesandboxapi.flutterwave.com/flwv3-pug/getpaidx/api/v2/verify |
+| RAVE_API_TEST | https://api.ravepay.co/flwv3-pug/getpaidx/api/v2/verify |
+
+
+### Run Application
+ Run command within the multi-event-book directory you cloned
+ 
+ ```sh
+$ go run main.go
+```
+
+### Todos
+
+ - Write Tests
+ - Make a couple tweaks to improvve performance
+
+License
+----
+
+MIT
+
+
+****
