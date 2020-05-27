@@ -301,15 +301,7 @@ func (detail *Payload) Confirm(w http.ResponseWriter) (map[string] interface{}) 
 
 			if templateData.GeneratePDF() {
 
-				domain, domainExists := os.LookupEnv("DOMAIN_HOST")
-
-				if !domainExists {
-
-					domain = "http://localhost/"
-
-				}
-
-				u.Response(w, http.StatusOK, "This payment has been verified","pdf/"+domain+transactionReference + ".pdf")
+				u.Response(w, http.StatusOK, "This payment has been verified","pdf/"+transactionReference + ".pdf")
 
 				return nil
 			}
