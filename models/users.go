@@ -309,7 +309,7 @@ func (detail *Payload) Confirm(w http.ResponseWriter) (map[string] interface{}) 
 
 				}
 
-				u.Response(w, http.StatusOK, "This payment has been verified",domain+transactionReference + ".pdf")
+				u.Response(w, http.StatusOK, "This payment has been verified","pdf/"+domain+transactionReference + ".pdf")
 
 				return nil
 			}
